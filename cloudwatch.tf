@@ -1,10 +1,12 @@
-resource "aws_cloudwatch_log_group" "log-group" {
-  name = var.logname
-}
+# resource "aws_cloudwatch_log_group" "log-group" {
+#   name = var.logname
+# }
+
+#create custom metric for log group
 
 resource "aws_cloudwatch_log_metric_filter" "metric-filter" {
   name           = var.metric_name
-  log_group_name = "ecs/staircase-pythongame-group"
+  log_group_name = var.logname
   pattern        =  var.pattern
   metric_transformation {
     name      = var.metric_name
@@ -12,6 +14,8 @@ resource "aws_cloudwatch_log_metric_filter" "metric-filter" {
     value     = "1"
   }
 }
+
+  #create cloudwatch alarm for custom metric          
 
 
 resource "aws_cloudwatch_metric_alarm" "cloudwatch-error-alarm" {
@@ -31,6 +35,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudwatch-error-alarm" {
   alarm_actions       = [aws_sns_topic.topic.arn]
 }
 
+ # Create SNS and email subscription
 
 resource "aws_sns_topic" "topic" {
   name = var.Notification-mail
